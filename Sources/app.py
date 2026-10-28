@@ -343,15 +343,17 @@ class MainWindow(QWidget):
     def launch_volume(self,volume):
         def found(disk,error):
             if error:self.error(error);return
-            reply=QMessageBox.question(self,"LinuxLive", "%s (%s) will be unmounted while Linux runs. Close any files you have open on this USB. Continue?" % (disk["name"],disk["id"]))
+            prompt=QMessageBox(QMessageBox.Question,"LinuxLive","%s (%s) will be unmounted while Linux runs. Close any files you have open on this USB. Continue?" % (disk["name"],disk["id"]),QMessageBox.Yes|QMessageBox.No,self)
+            protection=QCheckBox("Protect USB: discard virtual-machine changes",prompt);protection.setChecked(True);prompt.setCheckBox(protection)
+            reply=prompt.exec()
             if reply!=QMessageBox.Yes:return
             job=SUPPORT/"Jobs"/str(uuid.uuid4());job.mkdir(parents=True)
-            path=self.write_json(job/"plan.json",dict(job=str(job),disk=disk,uid=os.getuid(),gid=os.getgid(),home=str(Path.home()),memory_mb=1024,environment={key:os.environ[key] for key in ("DISPLAY","XAUTHORITY","XDG_RUNTIME_DIR","WAYLAND_DISPLAY","DBUS_SESSION_BUS_ADDRESS") if key in os.environ}))
+            path=self.write_json(job/"plan.json",dict(job=str(job),disk=disk,uid=os.getuid(),gid=os.getgid(),home=str(Path.home()),memory_mb=4096,read_only=protection.isChecked(),environment={key:os.environ[key] for key in ("DISPLAY","XAUTHORITY","XDG_RUNTIME_DIR","WAYLAND_DISPLAY","DBUS_SESSION_BUS_ADDRESS") if key in os.environ}))
             self.set_busy(True,"LinuxLive USB virtual machine")
             def done(data,error):
                 self.set_busy(False)
                 if error:self.error(error)
-                else:self.status.setText("LinuxLive session finished.")
+                else:self.status.setText("LinuxLive session finished. Reconnect the USB to browse it." if data.get("read_only") else "LinuxLive session finished.")
             self.task(["virtualize-usb",path],done,administrator=True)
         self.task(["volume",volume],found)
     def export_logs(self):
@@ -360,7 +362,7 @@ class MainWindow(QWidget):
     def open_repository(self):QDesktopServices.openUrl(QUrl("https://github.com/Coolestcool/linuxlive-usb-creator-native"))
     def about(self):
         box=QMessageBox(self);box.setWindowTitle("About LinuxLive USB Creator")
-        box.setText("LinuxLive USB Creator · Native edition\nVersion 1.0 preview 4\nMaintained by Enrique · Coolestcool\nContact: enrique330@gmail.com\nOpen-source software · GNU GPL v3")
+        box.setText("LinuxLive USB Creator · Native edition\nVersion %s\nMaintained by Enrique · Coolestcool\nContact: enrique330@gmail.com\nOpen-source software · GNU GPL v3" % self.info.get("version","1.0"))
         notices=box.addButton("Licenses and notices",QMessageBox.ActionRole);box.addButton("Close",QMessageBox.RejectRole);box.exec()
         if box.clickedButton() is notices:self.legal_notices()
     def legal_notices(self):

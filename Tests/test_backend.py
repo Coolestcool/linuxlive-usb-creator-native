@@ -56,6 +56,18 @@ class BackendTests(unittest.TestCase):
         self.assertEqual(target.read_bytes(),before)
         target.write_bytes(b"bad"+before[3:])
         with self.assertRaisesRegex(ValueError,"Verification failed"):verify_bytes(source,target,source.stat().st_size,lambda *_:None)
+    def test_usb_virtual_machine_protects_physical_backing_and_can_use_uefi(self):
+        from virtualization import usb_arguments
+        plan={'read_only':True,'diagnostics':True,'firmware':'uefi','memory_mb':4096}
+        with patch('virtualization.uefi_firmware',return_value=(self.root/'code.fd',self.root/'vars.fd')):
+            args=usb_arguments('/usr/local/bin/qemu-system-x86_64',plan,self.root)
+        self.assertIn('file=/dev/fdset/1,format=raw,if=none,id=lili-usb,snapshot=on',args)
+        self.assertIn('usb-storage,drive=lili-usb,bus=xhci.0,bootindex=1',args)
+        self.assertIn('none',args);self.assertIn('4096',args)
+        self.assertTrue(any('pflash,unit=0,format=raw,readonly=on' in arg for arg in args))
+        plan['read_only']=False
+        with patch('virtualization.uefi_firmware',return_value=(self.root/'code.fd',self.root/'vars.fd')):
+            with self.assertRaisesRegex(ValueError,'write protection'):usb_arguments('/usr/local/bin/qemu-system-x86_64',plan,self.root)
     def test_device_guards(self):
         name="disk9" if sys.platform=="darwin" else "sdb"
         good={"DeviceIdentifier":name,"DeviceNode":"/dev/"+name,"Whole":True,"Internal":False,"VirtualOrPhysical":"Physical","Writable":True,"TotalSize":8*1024**3,"MediaName":"Fixture USB","DeviceTreePath":"fixture","BusProtocol":"USB"}
