@@ -1,19 +1,19 @@
 class LinuxliveUsbCreator < Formula
   desc "Native macOS/Linux adaptation of LinuxLive USB Creator"
   homepage "https://github.com/Coolestcool/linuxlive-usb-creator-native"
-  version "1.0.0-preview5"
+  version "1.0.0-preview6"
   license "GPL-3.0-only"
 
   depends_on arch: :x86_64
 
   on_macos do
     depends_on macos: :tahoe
-    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview5/linuxlive-usb-creator-1.0.0-preview5-macos-x86_64.tar.gz"
-    sha256 "c745c2c40376ee6ed8f179d6ee8d25b5f14ba9d69828e74d121219678c790b63"
+    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview6/linuxlive-usb-creator-1.0.0-preview6-macos-x86_64.tar.gz"
+    sha256 "d40be270dd8f0c7d4bf21de12624e27ebf6711bf2227f8daece88c9990ceae1d"
   end
   on_linux do
-    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview5/linuxlive-usb-creator-1.0.0-preview5-linux-x86_64.tar.gz"
-    sha256 "80fd4f92d610d24611e782ab9b19a8d824e06bad923733575da5984833616cef"
+    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview6/linuxlive-usb-creator-1.0.0-preview6-linux-x86_64.tar.gz"
+    sha256 "deb24401003319649b2b2c479845a2a2af35bb6e7736459b89eb42a3391f8d67"
   end
 
   def install
@@ -55,6 +55,8 @@ class LinuxliveUsbCreator < Formula
     <<~EOS
       Preview: Intel macOS 26+, or Ubuntu 22.04+/Debian 12+ amd64.
       QEMU is needed only for launching Linux in a virtual machine.
+      macOS: direct USB access may require Full Disk Access for this installed app.
+      Reopen it after granting permission; ad-hoc preview updates may need renewed permission.
       Physical USB booting has not been hardware-certified.
     EOS
   end

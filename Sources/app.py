@@ -7,6 +7,7 @@ from pathlib import Path
 import shlex
 import subprocess
 import sys
+import tempfile
 import time
 import uuid
 from PySide6.QtCore import Qt, QProcess, QTimer, QUrl, QSize
@@ -25,6 +26,7 @@ class Task(QProcess):
     def __init__(self, owner, args, done, progress=None, administrator=False):
         super().__init__(owner)
         self.buffer = b"";self.value = None;self.failure = None;self.done = done;self.progress = progress
+        self.event_log=None;self.event_offset=0;self.diagnostic=None;self.poll=None
         self.setProcessChannelMode(QProcess.MergedChannels)
         self.readyReadStandardOutput.connect(self.consume)
         self.finished.connect(self.complete)
@@ -32,14 +34,32 @@ class Task(QProcess):
         command = launch_command() + ["--backend"] + [str(a) for a in args]
         if administrator:
             if sys.platform == "darwin":
-                shell = shlex.join(command).replace("\\", "\\\\").replace('"', '\\"')
+                logs=SUPPORT/"Logs";logs.mkdir(parents=True,exist_ok=True)
+                fd,path=tempfile.mkstemp(prefix="operation-",suffix=".jsonl",dir=logs);os.close(fd)
+                self.event_log=Path(path)
+                shell = (shlex.join(command)+" > "+shlex.quote(path)+" 2>&1").replace("\\", "\\\\").replace('"', '\\"')
                 command = ["/usr/bin/osascript", "-e", 'do shell script "' + shell + '" with administrator privileges']
+                self.poll=QTimer(self);self.poll.setInterval(250);self.poll.timeout.connect(self.consume_log);self.poll.start()
             else:
                 command = ["/usr/bin/pkexec"] + command
         self.setProgram(command[0]);self.setArguments(command[1:]);self.start()
 
     def consume(self):
-        self.buffer += bytes(self.readAllStandardOutput()).replace(b"\r", b"\n")
+        data=bytes(self.readAllStandardOutput())
+        if self.event_log:
+            if data.strip():self.diagnostic=data.decode("utf-8","replace")[-1500:]
+            self.consume_log()
+        else:self.parse_events(data)
+
+    def consume_log(self):
+        try:
+            with self.event_log.open("rb") as log:
+                log.seek(self.event_offset);data=log.read();self.event_offset=log.tell()
+        except OSError:return
+        self.parse_events(data)
+
+    def parse_events(self,data):
+        self.buffer += data.replace(b"\r", b"\n")
         while b"\n" in self.buffer:
             line, self.buffer = self.buffer.split(b"\n", 1)
             if not line: continue
@@ -47,19 +67,24 @@ class Task(QProcess):
             except (ValueError, UnicodeError):
                 self.failure = line.decode("utf-8", "replace")[-1500:];continue
             if event.get("event") == "result": self.value = event.get("value")
-            elif event.get("event") == "error": self.failure = event.get("message")
+            elif event.get("event") == "error":
+                self.failure = event.get("message")
+                if sys.platform=="darwin" and str(self.failure).startswith("[Errno 1]") and "/dev/" in str(self.failure):
+                    self.failure="macOS blocked direct USB access. Enable Full Disk Access for this copy of LinuxLive USB Creator in System Settings > Privacy & Security, then quit and reopen the app."
             elif event.get("event") == "progress" and self.progress: self.progress(event.get("fraction", 0), event.get("message", ""))
 
     def process_error(self, error):
         if error == QProcess.FailedToStart:
+            if self.poll:self.poll.stop()
             callback, self.done = self.done, None
             if callback: callback(None, self.errorString())
             self.deleteLater()
 
     def complete(self, code, status):
+        if self.poll:self.poll.stop()
         self.consume()
         callback, self.done = self.done, None
-        if self.value is None and not self.failure:self.failure="The worker stopped before completing this operation (exit %s)." % code
+        if self.value is None and not self.failure:self.failure=self.diagnostic or "The worker stopped before completing this operation (exit %s)." % code
         if callback: callback(self.value, self.failure if code != 0 or self.value is None else None)
         self.deleteLater()
 
@@ -112,6 +137,7 @@ class MainWindow(QWidget):
     def tr(self, text): return self.translations.get(text.lower(), text)
     def task(self, args, done, progress=None, administrator=False):
         task = Task(self, args, done, progress, administrator);self.tasks.append(task)
+        if task.event_log:self.logs.append("Operation log: "+str(task.event_log))
         task.destroyed.connect(lambda: self.tasks.remove(task) if task in self.tasks else None)
         return task
     def bootstrap(self):
@@ -243,7 +269,7 @@ class MainWindow(QWidget):
     def set_busy(self,busy,message=""):
         self.busy=busy;self.progress.setVisible(busy);self.launch_button.setEnabled(not busy);self.options_button.setEnabled(not busy)
         if message:self.status.setText(self.tr(message))
-    def report_progress(self,fraction,message):self.progress.setValue(int(max(0,min(1,fraction))*1000));self.status.setText(self.tr(message))
+    def report_progress(self,fraction,message):self.progress.setValue(int(max(0,min(1,fraction))*1000));self.status.setText("%s · %.1f%%" % (self.tr(message),max(0,min(1,fraction))*100))
     def error(self,message):self.logs.append(str(message));self.status.setText(str(message));QMessageBox.warning(self,self.tr("Please read"),str(message))
     def write_json(self,path,data):
         path=Path(path);path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(data,indent=2,ensure_ascii=False));path.chmod(0o600);return path

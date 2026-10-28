@@ -22,7 +22,7 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"Backend"))
 from core import catalog,translations,settings,hashes,recognize,validate_disk,run,tool,download,normalized_mac_info
 from boot import persistence_spec,prepare_boot
-from creation import archive_entries,inspect_source,prepare,make_image,clean_fat,verify_fat,install
+from creation import archive_entries,inspect_source,prepare,make_image,clean_fat,verify_fat,verify_bytes,install
 
 
 class BackendTests(unittest.TestCase):
@@ -48,6 +48,14 @@ class BackendTests(unittest.TestCase):
     def test_hashers(self):
         p=self.root/"hash.txt";p.write_bytes(b"123456789")
         data=hashes(p);self.assertEqual(data["crc32"],"cbf43926");self.assertEqual(data["md5"],hashlib.md5(p.read_bytes()).hexdigest());self.assertEqual(data["sha1"],hashlib.sha1(p.read_bytes()).hexdigest())
+    def test_readback_compares_only_image_range_and_rejects_corruption(self):
+        source=self.root/"source.img";source.write_bytes(b"verified source"*1024)
+        target=self.root/"device-fixture.img";target.write_bytes(source.read_bytes()+b"unused disk space")
+        before=target.read_bytes()
+        self.assertEqual(verify_bytes(source,target,source.stat().st_size,lambda *_:None),hashlib.sha256(source.read_bytes()).hexdigest())
+        self.assertEqual(target.read_bytes(),before)
+        target.write_bytes(b"bad"+before[3:])
+        with self.assertRaisesRegex(ValueError,"Verification failed"):verify_bytes(source,target,source.stat().st_size,lambda *_:None)
     def test_device_guards(self):
         name="disk9" if sys.platform=="darwin" else "sdb"
         good={"DeviceIdentifier":name,"DeviceNode":"/dev/"+name,"Whole":True,"Internal":False,"VirtualOrPhysical":"Physical","Writable":True,"TotalSize":8*1024**3,"MediaName":"Fixture USB","DeviceTreePath":"fixture","BusProtocol":"USB"}

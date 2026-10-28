@@ -303,6 +303,19 @@ def verify_fat(source, volume, relative):
 
 
 @exclusive_device
+def verify_usb(plan, progress=emit):
+    """Read back the image range; never write or unmount the selected USB."""
+    identifier=plan["disk"]["id"]
+    info=disk_info(identifier);validate_disk(info,plan["disk"]["identity"])
+    image=regular_file(plan["source"]["path"]);count=image.stat().st_size
+    if count>info["TotalSize"]:raise ValueError("The source image is larger than the USB disk.")
+    device=("/dev/r" if sys.platform=="darwin" else "/dev/")+identifier
+    digest=verify_bytes(image,device,count,progress)
+    if digest!=plan["source"]["hashes"]["sha256"]:raise ValueError("The source image changed after it was selected.")
+    return {"status":"verified","sha256":digest,"bytes_verified":count,"disk":identifier,"physical_writes":0}
+
+
+@exclusive_device
 def install(plan, progress=emit):
     if os.geteuid() != 0: raise ValueError("Administrator authorization is required to write the USB.")
     if not plan.get("prepared"): raise ValueError("Prepare the source before authorizing a disk write.")

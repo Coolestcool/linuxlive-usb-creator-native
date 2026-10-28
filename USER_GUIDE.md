@@ -15,3 +15,7 @@ To test without a USB, use File → Create disk image. On Linux, right-click the
 Options → General → Interface size controls the whole window, fonts and dialogs on the next launch. Automatic uses up to 150% and fits the available screen; manual choices extend to 200% when space allows.
 
 The Bonus menu offers CRC32, MD5 and SHA1 checks. Logs and full source are available from the menus. Licenses and notices explain the GPL terms, origin and dependency licenses. No donation prompts or advertising are included.
+
+On macOS, direct physical USB access requires both administrator authorization and the app’s privacy permission. If macOS rejects the device with “Operation not permitted”, enable Full Disk Access for the exact installed copy of LinuxLive USB Creator in System Settings → Privacy & Security, then quit and reopen it. Preview builds use ad-hoc signatures, so permissions may need renewal after an update. Use the installed Applications link or the Homebrew launcher rather than a build-folder copy.
+
+The USB disappears from Finder while its image is written and verified. The window shows the active phase and percentage; successful creation verifies all written bytes against the source and ejects the USB. Reconnect it afterwards. Administrator workers stream progress to private `operation-*.jsonl` files under the app’s Application Support/Logs directory, so progress and errors remain available even while the authorization wrapper is waiting.

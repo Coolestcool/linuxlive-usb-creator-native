@@ -5,12 +5,12 @@ import json
 from pathlib import Path
 import sys
 from core import ROOT, RES, SUPPORT, settings, save_settings, catalog, translations, hashes, disks, download, url_opener, ini, run
-from creation import emit, inspect_source, prepare, make_image, install, save_plan
+from creation import emit, inspect_source, prepare, make_image, install, verify_usb, save_plan
 
 
 def describe():
     from releases import current_catalog
-    return dict(current_releases=current_catalog(),version="1.0.0-preview5", original_version="2.9.4", settings=settings(), catalog=catalog(), languages=["Automatic", "English"] + sorted(p.stem for p in (RES / "languages").glob("*.ini")), tools={n: (ROOT / "NativeTools/bin" / n).is_file() for n in ("7z", "mcopy", "mformat", "mke2fs", "syslinux3", "syslinux4", "syslinux5", "syslinux6")}, virtualization=__import__("virtualization").qemu_path() is not None)
+    return dict(current_releases=current_catalog(),version="1.0.0-preview6", original_version="2.9.4", settings=settings(), catalog=catalog(), languages=["Automatic", "English"] + sorted(p.stem for p in (RES / "languages").glob("*.ini")), tools={n: (ROOT / "NativeTools/bin" / n).is_file() for n in ("7z", "mcopy", "mformat", "mke2fs", "syslinux3", "syslinux4", "syslinux5", "syslinux6")}, virtualization=__import__("virtualization").qemu_path() is not None)
 
 
 def updates():
@@ -43,10 +43,11 @@ def main():
         with url_opener(config).open("https://releases.ubuntu.com", timeout=15) as response:
             return {"status": response.status}
     if command == "updates": return updates()
-    if command in ("prepare", "make-image", "install"):
+    if command in ("prepare", "make-image", "install", "verify-usb"):
         plan = json.loads(Path(sys.argv[2]).read_text())
         if command == "prepare": return prepare(plan)
         if command == "make-image": return make_image(plan)
+        if command == "verify-usb": return verify_usb(plan)
         return install(plan)
     if command == "virtualize":
         from virtualization import virtualize_image
