@@ -10,9 +10,11 @@ import sys
 import time
 import uuid
 from PySide6.QtCore import Qt, QProcess, QTimer, QUrl, QSize
-from PySide6.QtGui import QPixmap, QPainter, QFont, QAction, QDesktopServices, QIcon
+from PySide6.QtGui import QPainter, QFont, QAction, QDesktopServices, QIcon
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QComboBox, QSlider, QLineEdit, QCheckBox, QProgressBar, QFileDialog, QMessageBox, QInputDialog, QMenu, QMenuBar
 from core import ROOT, RES, SUPPORT, settings
+from graphics import VectorPicture, render_vector
+from PySide6.QtSvg import QSvgRenderer
 
 
 def launch_command():
@@ -65,8 +67,8 @@ class Task(QProcess):
 class IconButton(QPushButton):
     def __init__(self, parent, name, rect, action, accessible):
         super().__init__(parent)
-        self.normal = QIcon(str(RES / "img" / (name + ".png")))
-        self.hover = QIcon(str(RES / "img" / (name + "_hover.png")))
+        self.normal = QIcon(str(RES / "img" / (name + ".svg")))
+        self.hover = QIcon(str(RES / "img" / (name + "_hover.svg")))
         if self.hover.isNull(): self.hover = self.normal
         self.setGeometry(*rect);self.setIcon(self.normal);self.setIconSize(QSize(rect[2], rect[3]))
         self.setStyleSheet("QPushButton {background:transparent;border:0;padding:0;} QPushButton:focus {border:1px dotted #aaa;}")
@@ -80,8 +82,8 @@ class MainWindow(QWidget):
         super().__init__(None, Qt.FramelessWindowHint | Qt.Window)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setFixedSize(450, 750);self.setWindowTitle("LinuxLive USB Creator")
-        self.setWindowIcon(QIcon(str(RES / "img/lili.ico")))
-        self.background = QPixmap(str(RES / "img/GUI.png"))
+        self.setWindowIcon(QIcon(str(RES / "img/lili.svg")))
+        self.background = QSvgRenderer(str(RES / "img/GUI.svg"),self);self.background_cache=None
         self.config = {};self.catalog = [];self.devices = [];self.source = None;self.info = {};self.translations = {}
         self.language = "English";self.busy = False;self.tasks = [];self.widgets = [];self.drag_origin = None;self.logs = []
         self.current_job = None;self.dialogs = [];self.last_virtual_image = None
@@ -91,7 +93,9 @@ class MainWindow(QWidget):
         if bootstrap: QTimer.singleShot(0, self.bootstrap)
 
     def paintEvent(self, event):
-        painter = QPainter(self);painter.drawPixmap(self.rect(), self.background)
+        key=(self.width(),self.height(),self.devicePixelRatioF())
+        if self.background_cache is None or self.background_cache[0]!=key:self.background_cache=(key,render_vector(self.background,*key))
+        painter = QPainter(self);painter.drawPixmap(0,0,self.background_cache[1])
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton: self.drag_origin = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
     def mouseMoveEvent(self, event):
@@ -132,7 +136,7 @@ class MainWindow(QWidget):
     def icon(self, name, rect, action, title):
         widget = IconButton(self, name, rect, action, title);self.widgets.append(widget);return widget
     def picture(self, name, rect):
-        widget = QLabel(self);widget.setGeometry(*rect);widget.setPixmap(QPixmap(str(RES / "img" / name)));widget.setScaledContents(True);self.widgets.append(widget);return widget
+        widget = VectorPicture(self,(RES / "img" / name).with_suffix(".svg"),rect);self.widgets.append(widget);return widget
     def checkbox(self, text, y, checked, callback):
         box = QCheckBox(text,self);box.setGeometry(67,y,300,42 if y == 558 else 25);box.setChecked(checked);box.setFont(QFont("Tahoma",8))
         box.setStyleSheet('QCheckBox{color:white;background:transparent;} QCheckBox::indicator{width:13px;height:13px;} QCheckBox::indicator:checked{image:url("'+str(RES/'img/checked.svg')+'");} QCheckBox::indicator:unchecked{image:url("'+str(RES/'img/unchecked.svg')+'");}')
@@ -178,7 +182,7 @@ class MainWindow(QWidget):
     def selected_disk(self):
         n = self.drive.currentIndex()-1
         return self.devices[n] if n in range(len(self.devices)) else None
-    def step(self, number, state): self.step_icons[number-1].setPixmap(QPixmap(str(RES / "img" / (state+".png"))))
+    def step(self, number, state): self.step_icons[number-1].set_asset(RES / "img" / (state+".svg"))
     def disk_changed(self,*args): self.step(1,"good" if self.selected_disk() else "bad");self.update_persistence()
     def refresh_disks(self):
         if self.busy:return

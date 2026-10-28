@@ -3,9 +3,10 @@
 from pathlib import Path
 import json
 from PySide6.QtCore import Qt, QUrl, QTimer
-from PySide6.QtGui import QPixmap, QDesktopServices
+from PySide6.QtGui import QDesktopServices
 from PySide6.QtWidgets import QDialog, QTabWidget, QWidget, QLabel, QPushButton, QComboBox, QLineEdit, QCheckBox, QScrollArea, QFileDialog, QMessageBox
 from core import RES, SUPPORT
+from graphics import VectorPicture
 
 
 class OptionsDialog(QDialog):
@@ -18,7 +19,7 @@ class OptionsDialog(QDialog):
         def tab(name):
             view=QWidget();tabs.addTab(view,self.tr(name));return view
         general=tab("General")
-        logo=QLabel(general);logo.setGeometry(12,12,344,107);logo.setPixmap(QPixmap(str(RES/"img/logo.jpg")));logo.setScaledContents(True)
+        logo=VectorPicture(general,RES/"img/logo.svg",(12,12,344,107))
         self.label("Native edition · 1.0 preview 3",general,(40,135,300,26))
         self.label("Maintained by Enrique · Coolestcool",general,(35,165,310,24))
         self.button("Contact: enrique330@gmail.com",general,(35,194,310,24),lambda:QDesktopServices.openUrl(QUrl("mailto:enrique330@gmail.com")))
@@ -34,9 +35,12 @@ class OptionsDialog(QDialog):
         self.recognition=self.combo([self.tr("Use LiLi automatic recognition"),self.tr("Force using default mode (works with most Linuxes)"),self.tr("Force using same parameters as")],install,(16,62,330,26))
         options=main.config.get("Install_Parameters",{})
         self.recognition.setCurrentIndex(0 if options.get("automatic_recognition","yes")=="yes" else 2 if options.get("use_same_parameter_as") else 1)
-        self.preset=self.combo([r.get("description",r.get("name","Linux"))+" · "+r.get("filename","") for r in main.catalog],install,(16,109,330,26))
-        for i,row in enumerate(main.catalog):
+        self.presets=main.info.get("current_releases",{}).get("rows",[])+main.catalog
+        self.preset=self.combo([("[Historical] " if not r.get("sha256") else "")+r.get("description",r.get("name","Linux"))+" · "+r.get("filename","") for r in self.presets],install,(16,109,330,26))
+        for i,row in enumerate(self.presets):
             if row["id"]==options.get("use_same_parameter_as"):self.preset.setCurrentIndex(i)
+        self.preset.setEnabled(self.recognition.currentIndex()==2)
+        self.recognition.currentIndexChanged.connect(lambda index:self.preset.setEnabled(index==2))
         self.label("Choose a matching distribution when automatic recognition cannot identify an image.",install,(20,164,325,60))
         languages=tab("Language")
         self.label(self.tr("Available languages"),languages,(30,45,310,26))
@@ -96,7 +100,7 @@ class OptionsDialog(QDialog):
         config.setdefault("Proxy",{})["proxy_mode"]=str(self.proxy_mode.currentIndex())
         for key,field in self.fields.items():config["Proxy"][key]=field.text()
         mode=self.recognition.currentIndex();config.setdefault("Install_Parameters",{})["automatic_recognition"]="yes" if mode==0 else "no"
-        config["Install_Parameters"]["use_same_parameter_as"]=self.main.catalog[self.preset.currentIndex()]["id"] if mode==2 and self.preset.currentIndex()>=0 else ""
+        config["Install_Parameters"]["use_same_parameter_as"]=self.presets[self.preset.currentIndex()]["id"] if mode==2 and self.preset.currentIndex()>=0 else ""
         for (section,key),box in self.flags.items():config.setdefault(section,{})[key]="yes" if box.isChecked() else "no"
     def accept(self):self.capture();self.main.save_config(self.main.load_language);super().accept()
     def test_proxy(self):

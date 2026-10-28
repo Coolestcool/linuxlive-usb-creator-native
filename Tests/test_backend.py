@@ -106,6 +106,9 @@ class BackendTests(unittest.TestCase):
         from releases import current_catalog,ubuntu,fedora
         current=current_catalog();self.assertGreaterEqual(len(current["rows"]),3)
         self.assertTrue(all(len(r["sha256"])==64 for r in current["rows"]))
+        first=current["rows"][0]
+        manual=recognize("custom.iso",config={"Install_Parameters":{"automatic_recognition":"no","use_same_parameter_as":first["id"]}})
+        self.assertEqual(manual["id"],first["id"]);self.assertEqual(manual["sha256"],"")
         pages={"https://releases.ubuntu.com/":'<a href="26.04/">old</a><a href="26.04.1/">new</a><a href="26.10/">latest</a>',
                "https://releases.ubuntu.com/26.04.1/SHA256SUMS":"c"*64+" *ubuntu-26.04-desktop-amd64.iso\n"+"a"*64+" *ubuntu-26.04.1-desktop-amd64.iso\n",
                "https://releases.ubuntu.com/26.10/SHA256SUMS":"b"*64+" *ubuntu-26.10-desktop-amd64.iso\n"}

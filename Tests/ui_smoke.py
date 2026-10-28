@@ -39,6 +39,9 @@ window.grab().save(str(OUT/"01-original-window.png"))
 dialog=OptionsDialog(window);dialog.show();application.processEvents()
 tabs=dialog.findChild(QTabWidget);assert tabs.count()==6
 assert not any("donat" in w.text().lower() or "contact me" in w.text().lower() for w in dialog.findChildren(QPushButton))
+assert dialog.preset.itemText(0).startswith("Ubuntu ")
+dialog.recognition.setCurrentIndex(1);assert not dialog.preset.isEnabled()
+dialog.recognition.setCurrentIndex(2);assert dialog.preset.isEnabled()
 assert set(dialog.fields)=={"proxy_url","proxy_port","proxy_username","proxy_password"}
 for n in range(6):
     tabs.setCurrentIndex(n);application.processEvents();dialog.grab().save(str(OUT/("02-options-"+str(n)+".png")))
@@ -58,5 +61,5 @@ window.update_source();window.update_persistence();window.slider.setValue(512);a
 assert window.amount.text()=="512" and window.slider.isVisible()
 window.grab().save(str(OUT/"05-persistence.png"))
 window.close();application.processEvents()
-report={"status":"PASS","platform":sys.platform,"window":[450,750],"catalog":519,"tabs":6,"advanced_options":len(window.config["Advanced"]),"launch_without_source":"blocked via real button","spanish":"original translation loaded","persistence_slider":512,"source_image":"original 450x750 GUI.png"}
+report={"status":"PASS","platform":sys.platform,"window":[450,750],"catalog":519,"tabs":6,"advanced_options":len(window.config["Advanced"]),"launch_without_source":"blocked via real button","spanish":"original translation loaded","persistence_slider":512,"source_image":"scalable SVG artwork, original logical layout"}
 (OUT/"results.json").write_text(json.dumps(report,indent=2));print(json.dumps(report))

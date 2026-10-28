@@ -67,7 +67,7 @@ def inspect_source(path, config, progress=emit):
         if release["sha256"]!=digest["sha256"]:raise ValueError("This image does not match the official SHA256 checksum. Use a verified download or the correct preset.")
         release["recognition"]="SHA256 verified"
     raw_reason=""
-    if release.get("install_method")=="raw":
+    if release.get("install_method")=="raw" or (release.get("id")=="default" and hybrid_image(p)):
         if not hybrid_image(p):raise ValueError("This ISO does not contain the expected hybrid USB layout.")
         mode="img";raw_reason="Direct image copy · no added persistence"
     entries = [] if mode == "img" else archive_entries(p)

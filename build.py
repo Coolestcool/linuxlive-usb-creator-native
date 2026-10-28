@@ -31,11 +31,15 @@ for src,dest in [(ROOT/'Resources','Resources'),(ROOT/'Original','Original'),(ar
 if sys.platform=='darwin':
     # A single bundled executable also handles JSON backend IPC.
     iconset=out/'lili.iconset';iconset.mkdir(exist_ok=True)
-    from PySide6.QtGui import QImage
-    original=QImage(str(ROOT/'Resources/img/lili.ico'))
+    from PySide6.QtGui import QImage, QPainter
+    from PySide6.QtSvg import QSvgRenderer
+    from PySide6.QtCore import Qt
+    original=QSvgRenderer(str(ROOT/'Resources/img/lili.svg'))
     for size in [16,32,128,256,512]:
         for scale in [1,2]:
-            original.scaled(size*scale,size*scale).save(str(iconset/('icon_%sx%s%s.png'%(size,size,'@2x' if scale==2 else ''))))
+            pixels=QImage(size*scale,size*scale,QImage.Format_ARGB32_Premultiplied);pixels.fill(Qt.transparent)
+            painter=QPainter(pixels);painter.setRenderHint(QPainter.Antialiasing);original.render(painter);painter.end()
+            pixels.save(str(iconset/('icon_%sx%s%s.png'%(size,size,'@2x' if scale==2 else ''))))
     icon=out/'lili.icns'
     chunks=[]
     for kind,name in [(b'ic07','icon_128x128.png'),(b'ic08','icon_256x256.png'),(b'ic09','icon_512x512.png'),(b'ic10','icon_512x512@2x.png')]:

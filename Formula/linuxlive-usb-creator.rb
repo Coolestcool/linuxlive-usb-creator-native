@@ -9,11 +9,11 @@ class LinuxliveUsbCreator < Formula
   on_macos do
     depends_on macos: :tahoe
     url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview3/linuxlive-usb-creator-1.0.0-preview3-macos-x86_64.tar.gz"
-    sha256 "8a9d6beb3a82feff016455e878cebdb0d670fda5e738922fd48622adf472b5dc"
+    sha256 "449bca3e4b2c6af056f20f60b3c5f9b2086d11e02e780745330fc874fb921943"
   end
   on_linux do
     url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview3/linuxlive-usb-creator-1.0.0-preview3-linux-x86_64.tar.gz"
-    sha256 "a8757cd2de5c2f5a736dccce263837224a1b48d5e4d5997389f8ec1c5a35335f"
+    sha256 "0179e5af42491c06a24923ea7794161dc63fc7bf55ba791620472ac614127b23"
   end
 
   def install

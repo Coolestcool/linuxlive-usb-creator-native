@@ -117,7 +117,8 @@ def recognize(path, digest=None, config=None):
     options = (config or settings()).get("Install_Parameters", {})
     forced = options.get("use_same_parameter_as", "")
     if options.get("automatic_recognition") == "no":
-        return next((r for r in rows if r["id"] == forced), {"id": "default", "name": "Default mode", "supported_features": ""})
+        preset=next((r for r in rows if r["id"] == forced), {"id": "default", "name": "Default mode", "supported_features": ""})
+        return dict(preset,recognition="Manual preset",sha256="")
     for r in rows:
         if digest and r.get("file_md5", "").lower() == digest.lower():
             return dict(r, recognition="MD5 verified")

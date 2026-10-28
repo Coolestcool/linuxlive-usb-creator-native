@@ -9,14 +9,14 @@ cat > "$base/usr/bin/linuxlive-usb-creator" <<'WRAPPER'
 exec '/opt/linuxlive-usb-creator/LinuxLive USB Creator' "$@"
 WRAPPER
 chmod 755 "$base/usr/bin/linuxlive-usb-creator"
-cp /src/Resources/img/logo.jpg "$base/usr/share/pixmaps/linuxlive-usb-creator.jpg"
+cp /src/Resources/img/lili.svg "$base/usr/share/pixmaps/linuxlive-usb-creator.svg"
 cat > "$base/usr/share/applications/linuxlive-usb-creator.desktop" <<'DESKTOP'
 [Desktop Entry]
 Type=Application
 Name=LinuxLive USB Creator
 Comment=Create a LinuxLive USB with persistence
 Exec=linuxlive-usb-creator
-Icon=/usr/share/pixmaps/linuxlive-usb-creator.jpg
+Icon=/usr/share/pixmaps/linuxlive-usb-creator.svg
 Terminal=false
 Categories=System;Utility;
 DESKTOP
