@@ -14,7 +14,7 @@ os.environ.setdefault("QT_QPA_PLATFORM","offscreen")
 os.environ["LILI_SUPPORT"]=str(OUT/"private-settings")
 sys.path[:0]=[str(ROOT/"Sources"),str(ROOT/"Backend")]
 from PySide6.QtWidgets import QApplication, QTabWidget, QPushButton
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt,QEvent
 from PySide6.QtTest import QTest
 from app import MainWindow
 from options import OptionsDialog, DownloadDialog
@@ -73,6 +73,17 @@ window.source={"name":"debian-live.iso","mode":"iso","bytes":1024,"release":{"na
 window.update_source();window.update_persistence();window.slider.setValue(512);application.processEvents()
 assert window.amount.text()=="512" and window.slider.isVisible()
 window.grab().save(str(OUT/"05-persistence.png"))
+window.source={"name":"ubuntu-modern.iso","mode":"img","release":{}}
+window.translations={};window.language="English"
+window.update_source();window.update_persistence();application.processEvents()
+assert not window.format.isEnabled() and window.format.isChecked()
+assert "required for this image" in window.format.text()
+assert "whole USB" in window.format.toolTip()
+window.render();application.sendPostedEvents(None,QEvent.DeferredDelete);application.processEvents()
+assert window.format.isChecked() and not window.format.isEnabled()
+window.grab().save(str(OUT/"06-direct-image-options.png"))
+window.clear_source();assert window.format.isEnabled() and not window.format.isChecked()
+QTest.mouseClick(window.format,Qt.LeftButton);assert window.format.isChecked()
 window.close();application.processEvents()
 report={"status":"PASS","platform":sys.platform,"window":[450,750],"catalog":519,"tabs":6,"advanced_options":len(window.config["Advanced"]),"launch_without_source":"blocked via real button","spanish":"original translation loaded","persistence_slider":512,"source_image":"scalable SVG artwork, original logical layout"}
 (OUT/"results.json").write_text(json.dumps(report,indent=2));print(json.dumps(report))

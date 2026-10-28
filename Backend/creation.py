@@ -108,8 +108,30 @@ def prepare(plan, progress=emit):
     source = plan["source"];path = Path(source["path"]).resolve(strict=True)
     if source["mode"] == "img":
         regular_file(path)
-        digest = hashes(path)["sha256"]
+        # The authorized macOS worker cannot inherit Downloads-folder access.
+        # Hand it a private copy prepared by the user process instead.
+        staged = None
+        if sys.platform == "darwin" and plan.get("disk"):
+            size = path.stat().st_size
+            if shutil.disk_usage(job).free < size + 16 * MB:
+                raise ValueError("Not enough local space to prepare this image for administrator access.")
+            fd, temporary = tempfile.mkstemp(prefix="source-", suffix=".part", dir=job)
+            temporary = Path(temporary);digest = hashlib.sha256();done = 0
+            try:
+                with os.fdopen(fd, "wb") as output, path.open("rb") as incoming:
+                    for block in iter(lambda: incoming.read(4 * MB), b""):
+                        output.write(block);digest.update(block);done += len(block)
+                        progress(done / max(1, size), "Preparing private image for administrator access")
+                digest = digest.hexdigest()
+                if done != size or source.get("hashes", {}).get("sha256", digest) != digest:
+                    raise ValueError("The source changed after it was selected.")
+                staged = job / "source.img";temporary.replace(staged)
+            finally:
+                temporary.unlink(missing_ok=True)
+        else:
+            digest = hashes(path)["sha256"]
         if source.get("hashes", {}).get("sha256", digest) != digest: raise ValueError("The source changed after it was selected.")
+        if staged:source["path"] = str(staged)
         source.setdefault("hashes", {})["sha256"] = digest
         plan["prepared"] = True;save_plan(plan);return plan
     staging = job / "payload"
@@ -290,14 +312,14 @@ def install(plan, progress=emit):
     device = ("/dev/r" if sys.platform == "darwin" else "/dev/") + identifier
     if plan.get("persistence_partition") and not plan.get("format"):
         raise ValueError("Modern Debian persistence needs a separate Linux partition. Enable FAT32 format for this installation.")
-    unmount(identifier, info)
-    validate_disk(disk_info(identifier), plan["disk"]["identity"])
     if source["mode"] == "img":
         image = regular_file(source["path"]);count = image.stat().st_size
         if hashes(image)["sha256"] != source.get("hashes", {}).get("sha256"):
             raise ValueError("The source image changed after preparation. Select it again.")
         if count % 512: raise ValueError("A raw image must contain complete 512-byte sectors.")
         if count > info["TotalSize"]: raise ValueError("The source image is larger than the USB disk.")
+        unmount(identifier, info)
+        validate_disk(disk_info(identifier), plan["disk"]["identity"])
         with image.open("rb", buffering=0) as incoming, open(device, "r+b", buffering=0) as out:
             done = 0
             while True:
@@ -313,6 +335,8 @@ def install(plan, progress=emit):
         digest = verify_bytes(image, device, count, progress)
         if sys.platform == "darwin": run(["/usr/sbin/diskutil", "eject", identifier])
         return {"status": "verified", "sha256": digest}
+    unmount(identifier, info)
+    validate_disk(disk_info(identifier), plan["disk"]["identity"])
     advanced = plan.get("settings", {}).get("Advanced", {})
     separate = plan.get("persistence_partition")
     if separate:

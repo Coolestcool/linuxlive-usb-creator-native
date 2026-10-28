@@ -145,7 +145,7 @@ class MainWindow(QWidget):
     def render(self):
         selection = self.drive.currentIndex() if hasattr(self,"drive") else 0
         persistence = self.slider.value() if hasattr(self,"slider") else 0
-        formatted = self.format.isChecked() if hasattr(self,"format") else False
+        formatted = self.format.isChecked() and not self.format.property("raw_mode") if hasattr(self,"format") else False
         for widget in self.widgets: widget.deleteLater()
         self.widgets = [];self.step_icons = [];self.source_controls = []
         self.icon("close",(362,22,20,20),self.close,self.tr("Close"));self.icon("min",(332,22,20,20),self.showMinimized,self.tr("Minimize"))
@@ -223,8 +223,11 @@ class MainWindow(QWidget):
         self.step(2,"warning" if chosen and self.source.get("release",{}).get("recognition") not in ("MD5 verified","SHA256 verified") else "good" if chosen else "bad")
     def update_persistence(self):
         raw=(self.source or {}).get("mode")=="img"
+        was_raw=bool(self.format.property("raw_mode"));self.format.setProperty("raw_mode",raw)
+        self.format.setText(self.tr("Erase and replace USB layout (required for this image)" if raw else "Format the key in FAT32 (this will erase your data !!)"))
+        self.format.setToolTip(self.tr("Direct image copy erases the whole USB and uses the image's own partitions. A separate FAT32 format is not used." if raw else "Format the USB as FAT32 before copying extracted files."))
         self.format.setEnabled(not raw and not self.busy)
-        if raw:self.format.setChecked(False)
+        if raw or was_raw:self.format.setChecked(raw)
         release=(self.source or {}).get("release",{});enabled="persistence" in release.get("supported_features","") and (self.source or {}).get("mode") != "img"
         limit=4095
         if self.selected_disk() and self.source:limit=max(0,min(limit,int((self.selected_disk()["size"]-self.source.get("install_bytes",self.source.get("bytes",0)))/1048576)-128))
@@ -263,15 +266,19 @@ class MainWindow(QWidget):
             answer,ok=QInputDialog.getText(self,self.tr("Please read"),message)
             if not ok or answer != disk["id"]:return
         job=SUPPORT/"Jobs"/str(uuid.uuid4());job.mkdir(parents=True)
-        plan=dict(job=str(job),source=self.source,persistence_mb=self.slider.value(),settings=self.config,format=self.format.isChecked(),hide_files=self.hide.isChecked(),virtualization=self.virtual.isChecked(),uid=os.getuid(),gid=os.getgid())
+        plan=dict(job=str(job),source=self.source,persistence_mb=self.slider.value(),settings=self.config,format=self.format.isChecked() and not self.format.property("raw_mode"),hide_files=self.hide.isChecked(),virtualization=self.virtual.isChecked(),uid=os.getuid(),gid=os.getgid())
         if output is not None:plan["output"]=str(output)
         else:plan["disk"]=disk
         path=self.write_json(job/"plan.json",plan);self.current_job=path;self.set_busy(True,"Preparing source")
+        def cleanup_source():
+            try:(job/"source.img").unlink(missing_ok=True)
+            except OSError as cleanup_error:self.logs.append("Temporary image cleanup: "+str(cleanup_error))
         def prepared(data,error):
-            if error:self.set_busy(False);self.error(error);return
+            if error:cleanup_source();self.set_busy(False);self.error(error);return
             command="make-image" if output is not None else "install"
             if output is None:self.status.setText("Administrator authorization is required to write the selected USB.")
             def completed(result,error):
+                cleanup_source()
                 self.set_busy(False)
                 if error:self.error(error);return
                 self.status.setText(self.tr("Your LinuxLive key is now up and ready"))

@@ -1,12 +1,12 @@
 # LinuxLive USB Creator — native macOS / Linux port
 
-Preview 1.0.0-preview4. Native edition maintained by Enrique ([Coolestcool](https://github.com/Coolestcool)). This is an independent GPL v3 adaptation; origin, copyright and dependency notices are retained in `NOTICE`, `LICENSE`, and `Licenses/`. Changes dated 2026-10-28. The original AutoIt sources, artwork, translations, release catalog and boot templates are under `Original/`. Changed implementation is under `Sources/` and `Backend/`; GPL-3.0-only. See `LICENSE` and `Licenses/` for dependency notices.
+Preview 1.0.0-preview5. Native edition maintained by Enrique ([Coolestcool](https://github.com/Coolestcool)). This is an independent GPL v3 adaptation; origin, copyright and dependency notices are retained in `NOTICE`, `LICENSE`, and `Licenses/`. Changes dated 2026-10-28. The original AutoIt sources, artwork, translations, release catalog and boot templates are under `Original/`. Changed implementation is under `Sources/` and `Backend/`; GPL-3.0-only. See `LICENSE` and `Licenses/` for dependency notices.
 
 ## Platforms and installation
 
 - This build targets Intel macOS 26+ and Ubuntu 22.04+/Debian 12+ amd64. Apple Silicon, ARM Linux and older Linux versions are not certified by these builds.
 - macOS: unpack the Mac archive and move `LinuxLive USB Creator.app` into Applications. The local build is ad-hoc signed, not Apple-notarized.
-- Ubuntu/Debian: `sudo apt install ./linuxlive-usb-creator_1.0.0-preview4_amd64.deb`. Launch `linuxlive-usb-creator` or use the desktop entry.
+- Ubuntu/Debian: `sudo apt install ./linuxlive-usb-creator_1.0.0-preview5_amd64.deb`. Launch `linuxlive-usb-creator` or use the desktop entry.
 - QEMU is optional for creating USB media and required for the “launch LinuxLive” feature: `brew install qemu` on Mac; `sudo apt install qemu-system-x86` on Ubuntu/Debian.
 - Homebrew uses this repository as a custom tap. First run `brew tap Coolestcool/lili`, then `brew trust --formula Coolestcool/lili/linuxlive-usb-creator` and `brew install lili`. Later use `brew update` and `brew upgrade lili`. The package is not part of Homebrew’s central catalog. The prebuilt Mac package requires Intel macOS 26+; Linux builds target Ubuntu/Debian x86_64.
 - Packages are published as GitHub Release assets under immutable version tags, with SHA256 checksums pinned in the formula. `lili` is a short alias for the package and launcher. For Ubuntu/Debian, the `.deb` installs the required desktop and disk-tool dependencies.

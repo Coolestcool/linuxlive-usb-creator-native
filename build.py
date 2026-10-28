@@ -53,6 +53,6 @@ if sys.platform=='darwin':
     app=out/'dist/LinuxLive USB Creator.app'
     plist=app/'Contents/Info.plist'
     information=plistlib.loads(plist.read_bytes())
-    information.update(CFBundleShortVersionString='1.0.0',CFBundleVersion='4',NSHighResolutionCapable=True,LSMinimumSystemVersion='26.0')
+    information.update(CFBundleShortVersionString='1.0.0',CFBundleVersion='5',NSHighResolutionCapable=True,LSMinimumSystemVersion='26.0')
     plist.write_bytes(plistlib.dumps(information))
     subprocess.run(['/usr/bin/codesign','--force','--deep','--sign','-',str(app)],check=True)

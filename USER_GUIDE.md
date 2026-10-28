@@ -8,6 +8,8 @@ Maintained by Enrique · Coolestcool. Open-source software under GNU GPL v3.
 4. Choose file visibility, formatting and native launchers. Formatting and direct image copies replace the device's existing layout. QEMU is required only for running Linux inside the host OS.
 5. Click the lightning button. Confirm the exact USB identifier and authorize the native disk operation. Wait until verification finishes.
 
+For direct-copy images, Step 4 shows that erasing/replacing the USB layout is mandatory; a separate FAT32 format would be overwritten by the image. On macOS, a private SHA256-checked copy is prepared locally before administrator authorization, so the authorized worker does not need Downloads-folder access. Allow free local space equal to the ISO size plus 16 MiB; the temporary copy is removed after completion or cancellation.
+
 To test without a USB, use File → Create disk image. On Linux, right-click the window to access the File, Bonus and Help menus.
 
 Options → General → Interface size controls the whole window, fonts and dialogs on the next launch. Automatic uses up to 150% and fits the available screen; manual choices extend to 200% when space allows.

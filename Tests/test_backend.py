@@ -12,6 +12,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from types import SimpleNamespace
 from unittest.mock import patch
 import zipfile
 
@@ -21,7 +22,7 @@ ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"Backend"))
 from core import catalog,translations,settings,hashes,recognize,validate_disk,run,tool,download,normalized_mac_info
 from boot import persistence_spec,prepare_boot
-from creation import archive_entries,inspect_source,prepare,make_image,clean_fat,verify_fat
+from creation import archive_entries,inspect_source,prepare,make_image,clean_fat,verify_fat,install
 
 
 class BackendTests(unittest.TestCase):
@@ -142,6 +143,35 @@ class BackendTests(unittest.TestCase):
         plan=prepare(plan,lambda *_:None)
         with self.assertRaises(ValueError):make_image(plan,lambda *_:None)
         self.assertEqual(Path(plan["output"]).read_bytes(),b"important")
+    def raw_plan(self):
+        source=self.root/"download.iso";source.write_bytes(b"image data"*512)
+        job=self.root/"private-job";job.mkdir()
+        return {"job":str(job),"disk":{"id":"disk9"},"source":{"path":str(source),"mode":"img","hashes":{"sha256":hashlib.sha256(source.read_bytes()).hexdigest()}}}
+    def test_macos_raw_source_is_staged_before_authorization(self):
+        plan=self.raw_plan();original=Path(plan["source"]["path"])
+        with patch("creation.sys.platform","darwin"):
+            ready=prepare(plan,lambda *_:None)
+        staged=Path(ready["source"]["path"])
+        self.assertEqual(staged.parent,Path(plan["job"]))
+        self.assertEqual(staged.stat().st_mode & 0o777,0o600)
+        self.assertEqual(staged.read_bytes(),original.read_bytes())
+        original.unlink()  # The authorized worker must no longer need Downloads.
+        info={"DeviceIdentifier":"disk9","DeviceNode":"/dev/disk9","Whole":True,"Internal":False,"VirtualOrPhysical":"Physical","Writable":True,"TotalSize":8*1024**3,"MediaName":"Fixture","DeviceTreePath":"fixture","BusProtocol":"USB"}
+        with patch("creation.sys.platform","darwin"),patch("creation.os.geteuid",return_value=0),patch("creation.disk_info",return_value=info),patch("creation.unmount",side_effect=ValueError("Stop before device access")) as unmount:
+            ready["disk"]["identity"]=validate_disk(info)
+            with self.assertRaisesRegex(ValueError,"Stop before device access"):
+                install.__wrapped__(ready,lambda *_:None)
+            unmount.assert_called_once()
+    def test_macos_staging_rejects_changed_source_and_cleans_partial(self):
+        plan=self.raw_plan();plan["source"]["hashes"]["sha256"]="0"*64
+        with patch("creation.sys.platform","darwin"):
+            with self.assertRaisesRegex(ValueError,"source changed"):prepare(plan,lambda *_:None)
+        self.assertEqual(list(Path(plan["job"]).iterdir()),[])
+    def test_macos_staging_checks_local_free_space(self):
+        plan=self.raw_plan()
+        with patch("creation.sys.platform","darwin"),patch("creation.shutil.disk_usage",return_value=SimpleNamespace(free=0)):
+            with self.assertRaisesRegex(ValueError,"Not enough local space"):prepare(plan,lambda *_:None)
+        self.assertEqual(list(Path(plan["job"]).iterdir()),[])
     def test_local_download_and_size_limit(self):
         source=self.root/"served";source.mkdir();(source/"test.iso").write_bytes(b"test ISO contents"*4000)
         handler=functools.partial(http.server.SimpleHTTPRequestHandler,directory=str(source))
