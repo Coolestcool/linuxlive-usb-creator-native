@@ -1,0 +1,206 @@
+{
+  "updated": "2026-10-28T16:31:33.401998+00:00",
+  "rows": [
+    {
+      "id": "current-ubuntu-ubuntu-26.10-desktop-amd64.iso",
+      "provider": "Ubuntu",
+      "name": "Ubuntu 26.10 Desktop",
+      "filename": "ubuntu-26.10-desktop-amd64.iso",
+      "sha256": "19efc38dde60055b192526bfbba075ac1da23992f1b006ddd41cbd30db0d9b0c",
+      "mirrors": [
+        "https://releases.ubuntu.com/26.10/ubuntu-26.10-desktop-amd64.iso"
+      ],
+      "download_page": "https://releases.ubuntu.com/",
+      "distribution": "ubuntu",
+      "supported_features": "",
+      "install_method": "raw",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-ubuntu-ubuntu-26.04.1-desktop-amd64.iso",
+      "provider": "Ubuntu",
+      "name": "Ubuntu 26.04.1 LTS Desktop",
+      "filename": "ubuntu-26.04.1-desktop-amd64.iso",
+      "sha256": "601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f",
+      "mirrors": [
+        "https://releases.ubuntu.com/26.04.1/ubuntu-26.04.1-desktop-amd64.iso"
+      ],
+      "download_page": "https://releases.ubuntu.com/",
+      "distribution": "ubuntu",
+      "supported_features": "",
+      "install_method": "raw",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-ubuntu-ubuntu-24.04.5.1-desktop-amd64.iso",
+      "provider": "Ubuntu",
+      "name": "Ubuntu 24.04.5.1 LTS Desktop",
+      "filename": "ubuntu-24.04.5.1-desktop-amd64.iso",
+      "sha256": "4da4a0c9035da8e68a59a838674f403f0a54472c78a83b4fb7f78d03588f85a7",
+      "mirrors": [
+        "https://releases.ubuntu.com/24.04.5.1/ubuntu-24.04.5.1-desktop-amd64.iso"
+      ],
+      "download_page": "https://releases.ubuntu.com/",
+      "distribution": "ubuntu",
+      "supported_features": "",
+      "install_method": "raw",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-xfce.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live XFCE",
+      "filename": "debian-live-13.7.0-amd64-xfce.iso",
+      "sha256": "379fcf159fa72a2ed8e3b74f4047df6061bc65adf5217e3d194e41a26fdb85e4",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-xfce.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-cinnamon.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live CINNAMON",
+      "filename": "debian-live-13.7.0-amd64-cinnamon.iso",
+      "sha256": "678b7c67ca3ab507a457fe1a0495e4030564177ea17387af1c743c969cdc8e6c",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-cinnamon.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-gnome.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live GNOME",
+      "filename": "debian-live-13.7.0-amd64-gnome.iso",
+      "sha256": "e94859a83b305cae5125dc9c6080ced040c59d099ea7381e7f300fd1dba87a17",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-gnome.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-kde.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live KDE",
+      "filename": "debian-live-13.7.0-amd64-kde.iso",
+      "sha256": "37dedc921f50325665c75829597126b3eeb70ff5cd8c511a7230ace09ae939be",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-kde.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-lxde.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live LXDE",
+      "filename": "debian-live-13.7.0-amd64-lxde.iso",
+      "sha256": "45c48b8782c958125728663b41b17fa7b9300eafd802c2f5f761c831d0b4d48b",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-lxde.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-lxqt.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live LXQT",
+      "filename": "debian-live-13.7.0-amd64-lxqt.iso",
+      "sha256": "40413e0d337dd104a85441c657d13485e481dcc54227bd56696e6e33457219fb",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-lxqt.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-mate.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live MATE",
+      "filename": "debian-live-13.7.0-amd64-mate.iso",
+      "sha256": "504f8a6e6eede8450c90a848bca52a04b2bf9e8859be6fc533435c33ce114bb9",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-mate.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-debian-debian-live-13.7.0-amd64-standard.iso",
+      "provider": "Debian",
+      "name": "Debian 13.7.0 Live STANDARD",
+      "filename": "debian-live-13.7.0-amd64-standard.iso",
+      "sha256": "040a44f35186321eb6cdaab52a8a2d06224fe6b77f6fbb9f1861ad89c14e17ec",
+      "mirrors": [
+        "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/debian-live-13.7.0-amd64-standard.iso"
+      ],
+      "download_page": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+      "distribution": "debian",
+      "supported_features": "debian-persistence,syslinux6",
+      "install_method": "extract",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-fedora-Fedora-KDE-Desktop-Live-44-1.7.x86_64.iso",
+      "provider": "Fedora",
+      "name": "Fedora 44 KDE",
+      "filename": "Fedora-KDE-Desktop-Live-44-1.7.x86_64.iso",
+      "sha256": "c8295961d4c41adbf785a31a17c21a971d3b7415fda72dcad0c11c49577bf03a",
+      "mirrors": [
+        "https://download.fedoraproject.org/pub/fedora/linux/releases/44/KDE/x86_64/iso/Fedora-KDE-Desktop-Live-44-1.7.x86_64.iso"
+      ],
+      "download_page": "https://fedoraproject.org/workstation/download",
+      "distribution": "fedora",
+      "supported_features": "",
+      "install_method": "raw",
+      "architecture": "x86_64"
+    },
+    {
+      "id": "current-fedora-Fedora-Workstation-Live-44-1.7.x86_64.iso",
+      "provider": "Fedora",
+      "name": "Fedora 44 Workstation",
+      "filename": "Fedora-Workstation-Live-44-1.7.x86_64.iso",
+      "sha256": "1620295f6a00c27c3208f0c00b8ece4eab1ec69b9002152d97488bf26a426ddf",
+      "mirrors": [
+        "https://download.fedoraproject.org/pub/fedora/linux/releases/44/Workstation/x86_64/iso/Fedora-Workstation-Live-44-1.7.x86_64.iso"
+      ],
+      "download_page": "https://fedoraproject.org/workstation/download",
+      "distribution": "fedora",
+      "supported_features": "",
+      "install_method": "raw",
+      "architecture": "x86_64"
+    }
+  ],
+  "errors": {},
+  "sources": {
+    "Ubuntu": "https://releases.ubuntu.com/",
+    "Debian": "https://cdimage.debian.org/debian-cd/current-live/amd64/iso-hybrid/",
+    "Fedora": "https://fedoraproject.org/releases.json"
+  }
+}

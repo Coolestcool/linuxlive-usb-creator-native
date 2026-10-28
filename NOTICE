@@ -1,0 +1,18 @@
+LinuxLive USB Creator — native edition
+Native adaptation and maintenance: © 2026 Enrique (Coolestcool)
+Project: https://github.com/Coolestcool/linuxlive-usb-creator-native
+
+This modified edition is based on LinuxLive USB Creator 2.9.4,
+written by Thibaut Lauzière (Slÿm), distributed under GNU GPL version 3.
+The original source notices, images, translations, boot templates and
+catalog provenance are retained in Original/ and Licenses/DEPENDENCIES.json.
+Original upstream: https://www.linuxliveusb.com/about
+Modifications dated 2026-10-28 implement the native Qt interface,
+macOS/Linux disk adapters, native boot tooling, current release catalog,
+SHA256 download verification, and whole-interface scaling.
+This native edition is independent and is not an official upstream release.
+
+The program is distributed under GPL-3.0-only, without any warranty.
+You may redistribute and modify it under the accompanying LICENSE.
+Separate bundled tools and libraries retain their own licenses and notices.
+See Licenses/ and NativeSources/ for notices and corresponding sources.

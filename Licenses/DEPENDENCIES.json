@@ -1,0 +1,178 @@
+{
+  "original": {
+    "name": "LinuxLive USB Creator 2.9.4",
+    "author": "Thibaut Lauziere (Slym)",
+    "license": "GPL-3.0-only",
+    "source": "Original/sources",
+    "homepage": "https://www.linuxliveusb.com/about"
+  },
+  "qt": {
+    "version": "6.8.3",
+    "license": "LGPL-3.0-only (dynamic libraries); dependency-specific notices apply",
+    "source": "https://download.qt.io/archive/qt/6.8/6.8.3/single/",
+    "notices": "https://doc.qt.io/qt-6.8/licenses-used-in-qt.html",
+    "bundled_sources": [
+      "qtbase-everywhere-src-6.8.3.tar.xz",
+      "qtsvg-everywhere-src-6.8.3.tar.xz",
+      "qtimageformats-everywhere-src-6.8.3.tar.xz"
+    ]
+  },
+  "pyside": {
+    "version": "6.8.3",
+    "license": "LGPL-3.0-only",
+    "source": "https://download.qt.io/official_releases/QtForPython/pyside6/PySide6-6.8.3-src/",
+    "notices": "https://doc.qt.io/qtforpython-6.8/licenses.html",
+    "bundled_source": "pyside-setup-everywhere-src-6.8.3.tar.xz"
+  },
+  "python": {
+    "mac_version": "3.9.6 (Apple Xcode distribution)",
+    "linux_version": "3.10 Ubuntu 22.04",
+    "license": "PSF-2.0 and historical license notices",
+    "source": "https://www.python.org/downloads/source/",
+    "notices": "https://docs.python.org/3.9/license.html"
+  },
+  "pyinstaller": {
+    "version": "6.22.3",
+    "license": "GPL-2.0-or-later with bootloader exception",
+    "source": "https://github.com/pyinstaller/pyinstaller/tree/v6.22.3",
+    "notice": "PyInstaller-COPYING.txt"
+  },
+  "7zip_mac": {
+    "version": "p7zip 17.06",
+    "license": "LGPL-2.1-or-later plus unRAR restriction for RAR decoder",
+    "source": "../NativeSources/p7zip-17.06.tar.gz",
+    "notice": "p7zip-License.txt; unRarLicense.txt"
+  },
+  "e2fs_mac": {
+    "version": "1.47.2 Android a1f793f6b1d0d063c7252704e11c475d3040ce85",
+    "license": "GPL-2.0-or-later and component notices",
+    "source": "../NativeSources/e2fsprogs-android-a1f793f6b.tar.gz",
+    "notice": "e2fsprogs-NOTICE.txt"
+  },
+  "linux_native": {
+    "versions": "e2fsprogs\t1.46.5-2ubuntu1.2\nlibblkid1:amd64\t2.37.2-4ubuntu3.6\nlibuuid1:amd64\t2.37.2-4ubuntu3.6\np7zip-full\t16.02+dfsg-8\n",
+    "source": "../NativeSources/ubuntu-22.04/",
+    "notice": "../NativeSources/ubuntu-22.04/licenses/"
+  },
+  "mtools": {
+    "version": "4.0.49",
+    "license": "GPL-3.0-or-later",
+    "source": "../NativeSources/mtools-4.0.49.tar.bz2"
+  },
+  "syslinux": {
+    "versions": [
+      "3.86",
+      "4.07",
+      "5.10",
+      "6.03"
+    ],
+    "license": "GPL-2.0-or-later and component notices",
+    "source": "../NativeSources/syslinux-*; ../build_native.py contains native-host patches"
+  },
+  "archives": {
+    "NativeSources/p7zip-17.06.tar.gz": {
+      "bytes": 6722070,
+      "sha256": "c35640020e8f044b425d9c18e1808ff9206dc7caf77c9720f57eb0849d714cd1"
+    },
+    "NativeSources/mtools-4.0.49.tar.bz2": {
+      "bytes": 471539,
+      "sha256": "6fe5193583d6e7c59da75e63d7234f76c0b07caf33b103894f46f66a871ffc9f"
+    },
+    "NativeSources/e2fsprogs-android-a1f793f6b.tar.gz": {
+      "bytes": 10179776,
+      "sha256": "58af49693c2db08efa3feee2e1c35abf92e7c162f43ba783ef43600af4685543"
+    },
+    "NativeSources/qtsvg-everywhere-src-6.8.3.tar.xz": {
+      "bytes": 2009072,
+      "sha256": "35eb516460f00f264eb504baa253432384351cf23fb9980a5857190e8deef438"
+    },
+    "NativeSources/syslinux-6.03.tar.xz": {
+      "bytes": 6855224,
+      "sha256": "26d3986d2bea109d5dc0e4f8c4822a459276cf021125e8c9f23c3cca5d8c850e"
+    },
+    "NativeSources/syslinux-3.86.tar.bz2": {
+      "bytes": 3735823,
+      "sha256": "82a8d2a242f869cb4c34b3a074871f472762343e1879a4dca23d7ce5c4dcd06d"
+    },
+    "NativeSources/syslinux-5.10.tar.xz": {
+      "bytes": 5315660,
+      "sha256": "4b52d7647d5584c69764c06a836e0d524e5246bf2e94f68cf86342c415508422"
+    },
+    "NativeSources/pyside-setup-everywhere-src-6.8.3.tar.xz": {
+      "bytes": 16611768,
+      "sha256": "d2c896f7f1a6a7ea4c9f98cfe317272fd139703ddf612b86999f09e48aeef0e6"
+    },
+    "NativeSources/syslinux-4.07.tar.xz": {
+      "bytes": 4580396,
+      "sha256": "8e228c34b8a98166a4d42bf0c8ad0ff767ea9ff38dc03b6543248944be6e1887"
+    },
+    "NativeSources/qtimageformats-everywhere-src-6.8.3.tar.xz": {
+      "bytes": 2035140,
+      "sha256": "049bfb99845e4801672aca07c3c4fc4c140f932a3a33faa899419579e33ef1c8"
+    },
+    "NativeSources/qtbase-everywhere-src-6.8.3.tar.xz": {
+      "bytes": 48426536,
+      "sha256": "56001b905601bb9023d399f3ba780d7fa940f3e4861e496a7c490331f49e0b80"
+    },
+    "NativeSources/ubuntu-22.04/e2fsprogs_1.46.5.orig.tar.gz.asc": {
+      "bytes": 488,
+      "sha256": "b1e248ed73d4d67ac0cf7760e780e0a5cd2db85bbb9a5dcc235538b596128916"
+    },
+    "NativeSources/ubuntu-22.04/e2fsprogs_1.46.5.orig.tar.gz": {
+      "bytes": 9530158,
+      "sha256": "b7430d1e6b7b5817ce8e36d7c8c7c3249b3051d0808a96ffd6e5c398e4e2fbb9"
+    },
+    "NativeSources/ubuntu-22.04/util-linux_2.37.2.orig.tar.xz": {
+      "bytes": 5621624,
+      "sha256": "6a0764c1aae7fb607ef8a6dd2c0f6c47d5e5fd27aa08820abaad9ec14e28e9d9"
+    },
+    "NativeSources/ubuntu-22.04/util-linux_2.37.2-4ubuntu3.6.dsc": {
+      "bytes": 4550,
+      "sha256": "e2b458d2005c328b0187ded5acac81c530cca8bf164f7c20b8370d02c4ffaebc"
+    },
+    "NativeSources/ubuntu-22.04/p7zip_16.02+dfsg.orig.tar.xz": {
+      "bytes": 3611764,
+      "sha256": "50adee7a4259e3492d8b68dfd12bda0ed27e615193a16f10af296f23dc831b14"
+    },
+    "NativeSources/ubuntu-22.04/p7zip_16.02+dfsg-8.debian.tar.xz": {
+      "bytes": 22004,
+      "sha256": "01217dca1667af0de48935a51dc46aad442e6ebcac799d714101b7edf9651eb5"
+    },
+    "NativeSources/ubuntu-22.04/versions.txt": {
+      "bytes": 119,
+      "sha256": "31e6167688ecab4610f67f377e2581bd717adba2d6f01bf08e89cd93c4681587"
+    },
+    "NativeSources/ubuntu-22.04/e2fsprogs_1.46.5-2ubuntu1.2.dsc": {
+      "bytes": 3190,
+      "sha256": "6f41e832d3e69bff96374f20e886a286f6dd8cfff68c1f0fc902281ed365560a"
+    },
+    "NativeSources/ubuntu-22.04/e2fsprogs_1.46.5-2ubuntu1.2.debian.tar.xz": {
+      "bytes": 86604,
+      "sha256": "b04fad2b12787628497127e6fab76de11c54229e08a406eba126df13f5224fdf"
+    },
+    "NativeSources/ubuntu-22.04/util-linux_2.37.2-4ubuntu3.6.debian.tar.xz": {
+      "bytes": 120724,
+      "sha256": "d556ef8fb39638a6fee023dc02d1ed4c9a15d6065f844fa885ddb5b9e755ae31"
+    },
+    "NativeSources/ubuntu-22.04/p7zip_16.02+dfsg-8.dsc": {
+      "bytes": 1905,
+      "sha256": "b65fe78ab1ed27c26dc5fb0e51ba3df655a9059eb2a7fbd272946af9c4ef7914"
+    },
+    "NativeSources/ubuntu-22.04/licenses/p7zip-full.txt": {
+      "bytes": 1459,
+      "sha256": "fdc5cf547f0662a0062961a495cb3c5fb907954af81f6ccc24cea8da8d60c2b1"
+    },
+    "NativeSources/ubuntu-22.04/licenses/e2fsprogs.txt": {
+      "bytes": 3594,
+      "sha256": "b7b391571e7253d4cf607e33e3b463895768fad264471e7774882974f834faa1"
+    },
+    "NativeSources/ubuntu-22.04/licenses/libblkid1.txt": {
+      "bytes": 23045,
+      "sha256": "2c447817698777e3b2365a5afe2a58ececb85367dfdf0ea2c0df49add90e93eb"
+    },
+    "NativeSources/ubuntu-22.04/licenses/libuuid1.txt": {
+      "bytes": 23045,
+      "sha256": "2c447817698777e3b2365a5afe2a58ececb85367dfdf0ea2c0df49add90e93eb"
+    }
+  }
+}

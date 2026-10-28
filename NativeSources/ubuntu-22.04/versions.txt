@@ -1,0 +1,4 @@
+e2fsprogs	1.46.5-2ubuntu1.2
+libblkid1:amd64	2.37.2-4ubuntu3.6
+libuuid1:amd64	2.37.2-4ubuntu3.6
+p7zip-full	16.02+dfsg-8
