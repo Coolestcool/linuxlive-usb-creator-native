@@ -20,7 +20,7 @@ class OptionsDialog(QDialog):
             view=QWidget();tabs.addTab(view,self.tr(name));return view
         general=tab("General")
         logo=VectorPicture(general,RES/"img/logo.svg",(12,12,344,107))
-        self.label("Native edition · 1.0 preview 3",general,(40,135,300,26))
+        self.label("Native edition · 1.0 preview 4",general,(40,135,300,26))
         self.label("Maintained by Enrique · Coolestcool",general,(35,165,310,24))
         self.button("Contact: enrique330@gmail.com",general,(35,194,310,24),lambda:QDesktopServices.openUrl(QUrl("mailto:enrique330@gmail.com")))
         self.label("Open-source software · GNU GPL v3",general,(25,222,325,20))

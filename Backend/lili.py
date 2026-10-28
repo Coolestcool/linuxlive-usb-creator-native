@@ -10,7 +10,7 @@ from creation import emit, inspect_source, prepare, make_image, install, save_pl
 
 def describe():
     from releases import current_catalog
-    return dict(current_releases=current_catalog(),version="1.0.0-preview3", original_version="2.9.4", settings=settings(), catalog=catalog(), languages=["Automatic", "English"] + sorted(p.stem for p in (RES / "languages").glob("*.ini")), tools={n: (ROOT / "NativeTools/bin" / n).is_file() for n in ("7z", "mcopy", "mformat", "mke2fs", "syslinux3", "syslinux4", "syslinux5", "syslinux6")}, virtualization=__import__("virtualization").qemu_path() is not None)
+    return dict(current_releases=current_catalog(),version="1.0.0-preview4", original_version="2.9.4", settings=settings(), catalog=catalog(), languages=["Automatic", "English"] + sorted(p.stem for p in (RES / "languages").glob("*.ini")), tools={n: (ROOT / "NativeTools/bin" / n).is_file() for n in ("7z", "mcopy", "mformat", "mke2fs", "syslinux3", "syslinux4", "syslinux5", "syslinux6")}, virtualization=__import__("virtualization").qemu_path() is not None)
 
 
 def updates():

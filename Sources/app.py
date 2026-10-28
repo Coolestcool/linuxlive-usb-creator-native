@@ -86,11 +86,12 @@ class MainWindow(QWidget):
         self.background = QSvgRenderer(str(RES / "img/GUI.svg"),self);self.background_cache=None
         self.config = {};self.catalog = [];self.devices = [];self.source = None;self.info = {};self.translations = {}
         self.language = "English";self.busy = False;self.tasks = [];self.widgets = [];self.drag_origin = None;self.logs = []
-        self.current_job = None;self.dialogs = [];self.last_virtual_image = None
+        self.current_job = None;self.dialogs = [];self.last_virtual_image = None;self.disks_loading=False
+        self.device_timer=QTimer(self);self.device_timer.setInterval(5000);self.device_timer.timeout.connect(self.refresh_disks)
         self.pending_volume = sys.argv[sys.argv.index("--launch-volume")+1] if "--launch-volume" in sys.argv and len(sys.argv)>sys.argv.index("--launch-volume")+1 else None
         self.setAcceptDrops(True);self.render()
         self.setContextMenuPolicy(Qt.CustomContextMenu);self.customContextMenuRequested.connect(self.context_menu)
-        if bootstrap: QTimer.singleShot(0, self.bootstrap)
+        if bootstrap:QTimer.singleShot(0,self.bootstrap);self.device_timer.start()
 
     def paintEvent(self, event):
         key=(self.width(),self.height(),self.devicePixelRatioF())
@@ -185,9 +186,17 @@ class MainWindow(QWidget):
     def step(self, number, state): self.step_icons[number-1].set_asset(RES / "img" / (state+".svg"))
     def disk_changed(self,*args): self.step(1,"good" if self.selected_disk() else "bad");self.update_persistence()
     def refresh_disks(self):
-        if self.busy:return
+        if self.busy or self.disks_loading:return
+        self.disks_loading=True
         def loaded(data,error):
-            self.devices = data or [];self.render()
+            self.disks_loading=False
+            if self.busy:return
+            rows=data or []
+            selected=self.selected_disk()
+            if rows!=self.devices:
+                self.devices=rows;self.render()
+                index=next((i+1 for i,disk in enumerate(rows) if selected and disk["id"]==selected["id"] and disk["identity"]==selected["identity"]),0)
+                self.drive.setCurrentIndex(index)
             if error:self.status.setText(error)
         self.task(["disks"],loaded)
     def choose_source(self,folder=False):
@@ -318,7 +327,7 @@ class MainWindow(QWidget):
     def open_repository(self):QDesktopServices.openUrl(QUrl("https://github.com/Coolestcool/linuxlive-usb-creator-native"))
     def about(self):
         box=QMessageBox(self);box.setWindowTitle("About LinuxLive USB Creator")
-        box.setText("LinuxLive USB Creator · Native edition\nVersion 1.0 preview 3\nMaintained by Enrique · Coolestcool\nContact: enrique330@gmail.com\nOpen-source software · GNU GPL v3")
+        box.setText("LinuxLive USB Creator · Native edition\nVersion 1.0 preview 4\nMaintained by Enrique · Coolestcool\nContact: enrique330@gmail.com\nOpen-source software · GNU GPL v3")
         notices=box.addButton("Licenses and notices",QMessageBox.ActionRole);box.addButton("Close",QMessageBox.RejectRole);box.exec()
         if box.clickedButton() is notices:self.legal_notices()
     def legal_notices(self):

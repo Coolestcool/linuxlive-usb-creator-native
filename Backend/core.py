@@ -133,13 +133,20 @@ def recognize(path, digest=None, config=None):
     return {"id": "default", "name": "Default mode", "supported_features": "", "recognition": "Unlisted image"}
 
 
+def normalized_mac_info(info):
+    # diskutil's plist calls this WholeDisk; the shared adapter uses Whole.
+    value=dict(info)
+    if "Whole" not in value:value["Whole"]=value.get("WholeDisk")
+    return value
+
+
 def disk_info(identifier):
     if sys.platform.startswith("linux"):
         from linux_disks import disk_info as linux_info
         return linux_info(identifier)
     if not re.fullmatch(r"disk\d+(?:s\d+)?", identifier):
         raise ValueError("Invalid device identifier")
-    return plistlib.loads(run(["/usr/sbin/diskutil", "info", "-plist", identifier]))
+    return normalized_mac_info(plistlib.loads(run(["/usr/sbin/diskutil", "info", "-plist", identifier])))
 
 
 def validate_disk(info, expected=None):

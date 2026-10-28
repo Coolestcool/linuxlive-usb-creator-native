@@ -15,9 +15,11 @@ import unittest
 from unittest.mock import patch
 import zipfile
 
+CONFIG=tempfile.TemporaryDirectory(prefix="lili-test-settings-")
+os.environ["LILI_SUPPORT"]=CONFIG.name
 ROOT=Path(__file__).resolve().parent.parent
 sys.path.insert(0,str(ROOT/"Backend"))
-from core import catalog,translations,settings,hashes,recognize,validate_disk,run,tool,download
+from core import catalog,translations,settings,hashes,recognize,validate_disk,run,tool,download,normalized_mac_info
 from boot import persistence_spec,prepare_boot
 from creation import archive_entries,inspect_source,prepare,make_image,clean_fat,verify_fat
 
@@ -54,6 +56,12 @@ class BackendTests(unittest.TestCase):
             with self.assertRaises(ValueError):validate_disk(bad)
         changed=dict(good);changed["TotalSize"]+=512
         with self.assertRaises(ValueError):validate_disk(changed,identity)
+    def test_macos_diskutil_whole_disk_field(self):
+        raw={"WholeDisk":True,"Internal":False,"VirtualOrPhysical":"Physical","Writable":True}
+        self.assertIs(normalized_mac_info(raw)["Whole"],True)
+        self.assertIs(normalized_mac_info(dict(raw,WholeDisk=False))["Whole"],False)
+        self.assertIs(normalized_mac_info(dict(raw,Whole=False))["Whole"],False)
+        self.assertIsNone(normalized_mac_info({})["Whole"])
     def test_linux_root_and_swap_protection(self):
         from linux_disks import normalized
         usb={"name":"sdb","path":"/dev/sdb","type":"disk","tran":"usb","size":100000000,"ro":False,"model":"Test","children":[{"name":"sdb1","mountpoint":"/","type":"part","size":99999999}]}

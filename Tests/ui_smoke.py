@@ -35,6 +35,19 @@ assert all(icon.width()==25 and icon.height()==40 for icon in window.step_icons)
 errors=[];window.error=lambda message:errors.append(message)
 QTest.mouseClick(window.launch_button,Qt.LeftButton)
 assert errors and "ISO" in errors[-1]
+# Refresh must never silently retarget a different physical device.
+original_task=window.task
+usb_a={"id":"fixture-a","name":"Fixture A","size":64*1024**3,"identity":{"key":"a"}}
+usb_b={"id":"fixture-b","name":"Fixture B","size":512*1024**3,"identity":{"key":"b"}}
+def inventory(rows):
+    window.task=lambda args,done,*a,**kw:done(rows,None)
+    window.refresh_disks()
+inventory([usb_a,usb_b]);window.drive.setCurrentIndex(2)
+inventory([usb_a]);assert window.selected_disk() is None
+inventory([usb_a,usb_b]);window.drive.setCurrentIndex(1)
+inventory([usb_b,usb_a]);assert window.selected_disk()["id"]=="fixture-a"
+control=window.drive;inventory([usb_b,usb_a]);assert window.drive is control
+window.task=original_task;window.devices=[];window.render();application.processEvents()
 window.grab().save(str(OUT/"01-original-window.png"))
 dialog=OptionsDialog(window);dialog.show();application.processEvents()
 tabs=dialog.findChild(QTabWidget);assert tabs.count()==6
