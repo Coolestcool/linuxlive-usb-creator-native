@@ -22,7 +22,7 @@ Categories=System;Utility;
 DESKTOP
 cat > "$base/DEBIAN/control" <<'CONTROL'
 Package: linuxlive-usb-creator
-Version: 1.0.0~preview6
+Version: 1.0.0~preview7
 Architecture: amd64
 Maintainer: LinuxLive USB Creator native port
 Section: utils
@@ -35,5 +35,5 @@ Description: Native macOS/Linux adaptation of LinuxLive USB Creator 2.9.4
 CONTROL
 size=$(du -sk "$base/opt" "$base/usr" | awk '{s+=$1} END {print s}')
 printf 'Installed-Size: %s\n' "$size" >> "$base/DEBIAN/control"
-dpkg-deb --root-owner-group --build "$base" /out/releases/linuxlive-usb-creator_1.0.0-preview6_amd64.deb
-tar -C /out/package/dist -czf /out/releases/linuxlive-usb-creator-1.0.0-preview6-linux-x86_64.tar.gz 'LinuxLive USB Creator'
+dpkg-deb --root-owner-group --build "$base" /out/releases/linuxlive-usb-creator_1.0.0-preview7_amd64.deb
+tar -C /out/package/dist -czf /out/releases/linuxlive-usb-creator-1.0.0-preview7-linux-x86_64.tar.gz 'LinuxLive USB Creator'

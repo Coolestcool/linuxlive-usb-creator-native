@@ -1,19 +1,19 @@
 class LinuxliveUsbCreator < Formula
   desc "Native macOS/Linux adaptation of LinuxLive USB Creator"
   homepage "https://github.com/Coolestcool/linuxlive-usb-creator-native"
-  version "1.0.0-preview6"
+  version "1.0.0-preview7"
   license "GPL-3.0-only"
 
   depends_on arch: :x86_64
 
   on_macos do
     depends_on macos: :tahoe
-    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview6/linuxlive-usb-creator-1.0.0-preview6-macos-x86_64.tar.gz"
-    sha256 "d40be270dd8f0c7d4bf21de12624e27ebf6711bf2227f8daece88c9990ceae1d"
+    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview7/linuxlive-usb-creator-1.0.0-preview7-macos-x86_64.tar.gz"
+    sha256 "d74b6daed72d39c60331dff21c1bbdf5bcd62a5cca2824dd96b68021f7c965a9"
   end
   on_linux do
-    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview6/linuxlive-usb-creator-1.0.0-preview6-linux-x86_64.tar.gz"
-    sha256 "deb24401003319649b2b2c479845a2a2af35bb6e7736459b89eb42a3391f8d67"
+    url "https://github.com/Coolestcool/linuxlive-usb-creator-native/releases/download/v1.0.0-preview7/linuxlive-usb-creator-1.0.0-preview7-linux-x86_64.tar.gz"
+    sha256 "be50141d824d01f5c196389212961c5e687e43327fc532fde4e1f31ee74de17e"
   end
 
   def install
